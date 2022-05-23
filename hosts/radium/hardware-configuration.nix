@@ -4,7 +4,6 @@
   ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
-  boot.initrd.kernelModules = [ "kvm-intel" ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-label/NXROOT";
@@ -19,6 +18,4 @@
   swapDevices =
     [ { device = "/dev/disk/by-label/NXSWAP"; }
     ];
-
-  powerManagement.cpuFreqGovernor = "powersave";
 }

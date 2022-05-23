@@ -1,33 +1,45 @@
 { lib, pkgs, inputs, ... }: {
   imports = [
-    inputs.hardware.nixosModules.common-cpu-amd
-    inputs.hardware.nixosModules.common-gpu-amd
-    inputs.hardware.nixosModules.common-pc-ssd
-
+    inputs.hardware.nixosModules.dell-xps-15-9500
     ./hardware-configuration.nix
   ];
 
-
   boot = {
     consoleLogLevel = 0;
-    # Kernel
+
     initrd.verbose = false;
-    kernelPackages = pkgs.linuxPackages;
-    plymouth = {
-      enable = true;
-    };
+    
+    kernelParams = [ "quiet" "udev.log_level=3" ];
+    
     loader = {
-      timeout = 0;
       systemd-boot = {
         enable = true;
-        consoleMode = "max";
         editor = false;
+        configurationLimit = 5;
       };
+
       efi.canTouchEfiVariables = true;
     };
-    kernelParams =
-      [ "quiet" "udev.log_priority=3" "vt.global_cursor_default=0" ];
   };
+
+  environment = {
+    homeBinInPath = true;
+    localBinInPath = true;
+    etc."nixos" = {
+      target = "nixos";
+      source = "/home/p0g/DDD";
+    };
+  };
+
+  hardware = {
+    opengl = {
+      enable = true;
+      driSupport = true;
+    };
+    video.hidpi.enable = true;
+  };
+
+  system.stateVersion = "22.05";
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -51,7 +63,7 @@
     '';
     gc = {
       automatic = true;
-      dates = "weekly";
+      dates = "daily";
     };
   };
 
@@ -66,8 +78,8 @@
         functions.enable = true;
       };
     };
+    dconf.enable = true;
   };
-
 
   services = {
     dbus.packages = [ pkgs.gcr ];
@@ -94,7 +106,6 @@
       jack.enable = true;
     };
   };
-
 
   xdg.portal = {
     enable = true;

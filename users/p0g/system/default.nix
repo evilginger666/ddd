@@ -5,4 +5,6 @@
     initialPassword= "changeme";
     extraGroups = [ "networkmanager" "audio" "wheel" ];
   };
+
+  security.pam.services.swaylock = { };
 }
