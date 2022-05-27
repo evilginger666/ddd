@@ -20,7 +20,6 @@ let
   swayidle = "${pkgs.swayidle}/bin/swayidle";
   swaylock = "${pkgs.swaylock-effects}/bin/swaylock";
   wofi = "${pkgs.wofi}/bin/wofi";
-  xrandr = "${pkgs.xorg.xrandr}/bin/xrandr";
   zathura = "${pkgs.zathura}/bin/zathura";
 
   inherit (config.colorscheme) colors;
@@ -29,6 +28,7 @@ let
 in {
   wayland.windowManager.sway = {
     enable = true;
+    extraOptions = [ ];
     systemdIntegration = true;
     wrapperFeatures.gtk = true;
     config = {
@@ -38,7 +38,11 @@ in {
         names = [ config.fontProfiles.regular.family ];
         size = 12.0;
       };
-      output = { };
+      output = {
+        "eDP-1" = { bg = "${config.wallpaper} fill";};
+        "DP-3" = { bg = "${config.wallpaper} fill";};
+
+      };
       defaultWorkspace = "workspace number 1";
       workspaceOutputAssign = [ ];
       input = { };
@@ -86,9 +90,7 @@ in {
         # Start idle daemon
         { command = "${swayidle} -w"; }
         # Add transparency
-        { command = "SWAYFADER_CON_INAC=0.85 ${swayfader}"; }
-        # Init discocss
-        { command = "${discocss}"; }
+        { command = "SWAYFADER_CON_INAC=0.90 ${swayfader}"; }
       ];
       bars = [ ];
       window = {

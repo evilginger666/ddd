@@ -16,7 +16,7 @@
       inherit (builtins) attrValues;
       inherit (my-lib) mkHome mkSystem importAttrset;
       inherit (inputs.nixpkgs.lib) genAttrs systems;
-      forAllSystems = genAttrs systems.supported.hydra;
+      forAllSystems = genAttrs systems.flakeExposed;
     in
     rec {
       overlays = {

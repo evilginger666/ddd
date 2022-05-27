@@ -10,8 +10,6 @@ let
   actionLock = "${swaylock} -i ${config.wallpaper} --daemonize";
   actionMute = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
   actionUnmute = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
-  actionRgbOff = "systemctl --user stop rgbdaemon";
-  actionRgbOn = "systemctl --user start rgbdaemon";
   actionDisplayOff = ''swaymsg "output * dpms off"'';
   actionDisplayOn = ''swaymsg "output * dpms on"'';
 in

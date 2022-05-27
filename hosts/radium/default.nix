@@ -1,24 +1,46 @@
-{ lib, pkgs, inputs, ... }: {
+{ config, lib, pkgs, ... }:
+{
   imports = [
-    inputs.hardware.nixosModules.dell-xps-15-9500
     ./hardware-configuration.nix
   ];
 
   boot = {
+    blacklistedKernelModules = lib.mkDefault [ "nouveau" "nvidia" ];
     consoleLogLevel = 0;
 
-    initrd.verbose = false;
-    
-    kernelParams = [ "quiet" "udev.log_level=3" ];
-    
+    extraModprobeConfig = ''
+      options iwlwifi power_save=1 disable_11ax=1
+    '';
+
+    initrd = {
+      enable = true;
+      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+      kernelModules = [ "intel_agp" "i915" ];
+      systemd.enable = true;
+      verbose = false;
+    };
+
+    kernelModules = [ "kvm-intel" ];
+
+    # Kernel
+    kernelPackages = pkgs.linuxPackages;
+
+    kernelParams = [ "quiet" "rd.udev.log_level=3" "acpi_rev_override=1" "fbcon=nodefer" "mem_sleep_default=deep"];
+
     loader = {
+      timeout = 0;
       systemd-boot = {
         enable = true;
+        consoleMode = "max";
         editor = false;
-        configurationLimit = 5;
       };
-
       efi.canTouchEfiVariables = true;
+    };
+
+    plymouth = {
+      enable = true;
+      theme = "jijicat";
+      themePackages = [ pkgs.kitty-plymouth ];
     };
   };
 
@@ -29,17 +51,23 @@
       target = "nixos";
       source = "/home/p0g/DDD";
     };
+    variables = {
+      VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+    };
   };
 
   hardware = {
+    bluetooth.enable = true;
+    cpu.intel.updateMicrocode = true;
     opengl = {
       enable = true;
-      driSupport = true;
+      extraPackages = with pkgs; [
+        vaapiIntel
+        libvdpau-va-gl
+        intel-media-driver
+      ];
     };
-    video.hidpi.enable = true;
   };
-
-  system.stateVersion = "22.05";
 
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -47,16 +75,10 @@
       LC_TIME = "en_CA.UTF-8";
     };
   };
-  time.timeZone = lib.mkDefault "America/Toronto";
 
   networking.networkmanager.enable = true;
 
   nix = {
-    settings = {
-      trusted-users = [ "root" "@wheel" ];
-      auto-optimise-store = true;
-    };
-    package = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
       warn-dirty = false
@@ -65,11 +87,15 @@
       automatic = true;
       dates = "daily";
     };
+    settings = {
+      trusted-users = [ "root" "@wheel" ];
+      auto-optimise-store = true;
+    };
   };
 
   powerManagement.powertop.enable = true;
   programs = {
-    light.enable = true;
+    dconf.enable = true;
     fish = {
       enable = true;
       vendor = {
@@ -78,12 +104,22 @@
         functions.enable = true;
       };
     };
-    dconf.enable = true;
+    light.enable = true;
   };
 
+  security.rtkit.enable = true;
   services = {
-    dbus.packages = [ pkgs.gcr ];
-    geoclue2.enable = true;
+    avahi = {
+      enable = true;
+      nssmdns = true;
+      reflector = true;
+      openFirewall = true;
+    };
+    fail2ban.enable = true;
+    fwupd.enable = true;
+    geoclue2 = {
+      enable = true;
+    };
     greetd = {
       enable = true;
       settings = rec {
@@ -94,6 +130,7 @@
         default_session = initial_session;
       };
     };
+    fstrim.enable = true;
     logind = {
       lidSwitch = "suspend";
       lidSwitchExternalPower = "lock";
@@ -101,11 +138,17 @@
     pipewire = {
       enable = true;
       alsa.enable = true;
-      alsa.support32Bit = true;
       pulse.enable = true;
       jack.enable = true;
     };
+    thermald = {
+      enable = true;
+    };
   };
+
+  system.stateVersion = "22.05";
+
+  time.timeZone = lib.mkDefault "America/Toronto";
 
   xdg.portal = {
     enable = true;
@@ -113,4 +156,3 @@
     wlr.enable = true;
   };
 }
-

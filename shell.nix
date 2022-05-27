@@ -1,4 +1,3 @@
-# Shell for bootstrapping flake-enabled nix and home-manager, from any nix version
 { pkgs ? let
     inherit (builtins) currentSystem pathExists fromJSON readFile;
 
@@ -35,4 +34,3 @@ in
 pkgs.mkShell {
   nativeBuildInputs = with pkgs; [ nix home-manager git ];
 }
-

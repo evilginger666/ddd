@@ -4,7 +4,7 @@ let inherit (config.colorscheme) colors;
 in {
   xdg.configFile."swaylock/config".text = ''
     effect-blur=20x3
-    fade-in=0.1
+    fade-in=0.5
 
     font=${config.fontProfiles.regular.family}
     font-size=15
