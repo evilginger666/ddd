@@ -6,7 +6,7 @@
   The Dotfiles Deployment Devil
 </p>
 
-> **Note:** This project is in early-stage and should only be used in a sandboxed environment (VM, containers).
+> **Note:** This project is in early-stage and should be used with caution
 
 ## Features (or maybe not yet?)
 
