@@ -1,7 +1,6 @@
 { pkgs, ... }: {
   imports = [
     ./kitty.nix
-    ./discord.nix
     ./font.nix
     ./gammastep.nix
     ./gtk.nix

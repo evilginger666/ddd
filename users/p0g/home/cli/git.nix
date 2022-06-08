@@ -1,9 +1,7 @@
-{ pkgs, ... }: {
+{
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
     aliases = {
-      pushall = "!git remote | xargs -L1 git push --all";
       graph = "log --decorate --oneline --graph";
     };
     userName = "Pierre-Olivier Gagne";
@@ -14,5 +12,8 @@
     };
     lfs = { enable = true; };
     ignores = [ ".direnv" "result" ];
+  };
+  programs.gitui = {
+    enable = true;
   };
 }

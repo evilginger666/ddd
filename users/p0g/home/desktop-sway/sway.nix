@@ -2,15 +2,10 @@
 
 let
   # Programs
-  amfora = "${pkgs.amfora}/bin/amfora";
-  discocss = "${pkgs.discocss}/bin/discocss";
   grimshot = "${pkgs.sway-contrib.grimshot}/bin/grimshot";
   kitty = "${config.programs.kitty.package}/bin/kitty";
-  light = "${pkgs.light}/bin/light";
   makoctl = "${pkgs.mako}/bin/makoctl";
-  neomutt = "${pkgs.neomutt}/bin/neomutt";
   nvim = "${pkgs.neovim}/bin/nvim";
-  octave = "${pkgs.octave}/bin/octave";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   pass-wofi = "${pkgs.pass-wofi.override {pass = config.programs.password-store.package;}}/bin/pass-wofi";
   playerctl = "${pkgs.playerctl}/bin/playerctl";
@@ -23,7 +18,7 @@ let
   zathura = "${pkgs.zathura}/bin/zathura";
 
   inherit (config.colorscheme) colors;
-  modifier = "Mod4";
+  modifier = "Mod1";
   terminal = kitty;
 in {
   wayland.windowManager.sway = {
@@ -39,16 +34,24 @@ in {
         size = 12.0;
       };
       output = {
-        "eDP-1" = { bg = "${config.wallpaper} fill";};
-        "DP-3" = { bg = "${config.wallpaper} fill";};
+        "eDP-1" = {
+          bg = "${config.wallpaper} fill";
+          pos = "0 1200";
+        };
+        "DP-3" = {
+          bg = "${config.wallpaper} fill";
+          pos = "0 0";
+        };
 
       };
       defaultWorkspace = "workspace number 1";
       workspaceOutputAssign = [ ];
-      input = { };
+      input = {
+        "*" = { xkb_options = "caps:swapescape"; };
+      };
       gaps = {
         horizontal = 5;
-        inner = 28;
+        inner = 10;
       };
       floating.criteria = [
         { app_id = "zenity"; }
@@ -101,6 +104,10 @@ in {
             criteria = { title = "Wine System Tray"; };
           }
           {
+            command = "inhibit_idle fullscreen";
+            criteria = { app_id = "__focused__"; };
+          }
+          {
             command = "move scratchpad";
             criteria = { title = "Firefox — Sharing Indicator"; };
           }
@@ -125,10 +132,10 @@ in {
         "${modifier}+Shift+u" = "move scratchpad";
 
         # Move entire workspace
-        "${modifier}+Mod1+h" = "move workspace to output left";
-        "${modifier}+Mod1+Left" = "move workspace to output left";
-        "${modifier}+Mod1+l" = "move workspace to output right";
-        "${modifier}+Mod1+Right" = "move workspace to output right";
+        "${modifier}+Mod4+h" = "move workspace to output left";
+        "${modifier}+Mod4+Left" = "move workspace to output left";
+        "${modifier}+Mod4+l" = "move workspace to output right";
+        "${modifier}+Mod4+Right" = "move workspace to output right";
 
         # Toggle monitors
         "${modifier}+Control+Left" = "output DP-1 toggle";
@@ -154,10 +161,6 @@ in {
         "XF86AudioMicMute" =
           "exec ${pactl} set-source-mute @DEFAULT_SOURCE@ toggle";
 
-        # Brightness
-        "XF86MonBrightnessUp" = "exec ${light} -A 10";
-        "XF86MonBrightnessDown" = "exec ${light} -U 10";
-
         # Media
         "XF86AudioNext" =
           "exec player=$(${preferredplayer}) && ${playerctl} next --player $player";
@@ -178,9 +181,6 @@ in {
 
         # Programs
         "${modifier}+v" = "exec ${terminal} $SHELL -i -c ${nvim}";
-        "${modifier}+o" = "exec ${terminal} $SHELL -i -c ${octave}";
-        "${modifier}+m" = "exec ${terminal} $SHELL -i -c ${neomutt}";
-        "${modifier}+a" = "exec ${terminal} $SHELL -i -c ${amfora}";
         "${modifier}+b" = "exec ${qutebrowser}";
         "${modifier}+z" = "exec ${zathura}";
 
@@ -188,7 +188,7 @@ in {
         "Print" = "exec ${grimshot} --notify copy output";
         "Shift+Print" = "exec ${grimshot} --notify copy active";
         "Control+Print" = "exec ${grimshot} --notify copy screen";
-        "Mod1+Print" = "exec ${grimshot} --notify copy area";
+        "Mod4+Print" = "exec ${grimshot} --notify copy area";
         "${modifier}+Print" = "exec ${grimshot} --notify copy window";
 
         # Application menu

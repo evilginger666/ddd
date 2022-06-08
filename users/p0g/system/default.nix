@@ -3,7 +3,7 @@
     isNormalUser = true;
     shell = pkgs.fish;
     initialPassword= "changeme";
-    extraGroups = [ "networkmanager" "audio" "wheel" ];
+    extraGroups = [ "networkmanager" "audio" "wheel" "video"];
   };
 
   security.pam.services.swaylock = { };

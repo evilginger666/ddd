@@ -22,6 +22,9 @@ let jsonOutput = { pre ? "", text ? "", tooltip ? "", alt ? "", class ? "", perc
     settings = [{
       layer = "top";
       height = 42;
+      output = [
+        "eDP-1"
+      ];
       position = "top";
       modules-left = [
         "custom/menu"

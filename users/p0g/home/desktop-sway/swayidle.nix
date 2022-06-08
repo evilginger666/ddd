@@ -1,15 +1,12 @@
-{ pkgs, hostname, config, ... }:
+{ pkgs, config, ... }:
 
 let
   swaylock = "${pkgs.swaylock-effects}/bin/swaylock";
-  pactl = "${pkgs.pulseaudio}/bin/pactl";
   pgrep = "${pkgs.procps}/bin/pgrep";
 
   lockTime = 240;
   isLocked = "${pgrep} -x swaylock";
   actionLock = "${swaylock} -i ${config.wallpaper} --daemonize";
-  actionMute = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
-  actionUnmute = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
   actionDisplayOff = ''swaymsg "output * dpms off"'';
   actionDisplayOn = ''swaymsg "output * dpms on"'';
 in
@@ -21,9 +18,6 @@ in
   # If has RGB, turn off 20 seconds after locked
   xdg.configFile."swayidle/config".text = ''
     timeout ${toString lockTime} '${actionLock}'
-
-    timeout ${toString (lockTime + 10)} '${actionMute}' resume  '${actionUnmute}'
-    timeout 10 '${isLocked} && ${actionMute}' resume  '${isLocked} && ${actionUnmute}'
 
     timeout ${toString (lockTime + 20)} '${actionDisplayOff}' resume  '${actionDisplayOn}'
     timeout 20 '${isLocked} && ${actionDisplayOff}' resume  '${isLocked} && ${actionDisplayOn}'
