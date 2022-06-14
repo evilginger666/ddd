@@ -5,16 +5,18 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     hardware.url = "github:nixos/nixos-hardware";
 
-    home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = inputs:
     let
       my-lib = import ./lib { inherit inputs; };
-      inherit (builtins) attrValues;
-      inherit (my-lib) mkHome mkSystem importAttrset;
+      inherit (builtins) attrValues mapAttrs;
+      inherit (my-lib) mkSystem mkHome importAttrset;
       inherit (inputs.nixpkgs.lib) genAttrs systems;
       forAllSystems = genAttrs systems.flakeExposed;
     in
@@ -24,10 +26,7 @@
       };
 
       packages = forAllSystems (system:
-        let
-          pkgs = import inputs.nixpkgs { inherit system; overlays = attrValues overlays; };
-        in
-        builtins.removeAttrs pkgs [ "system" ]
+        import inputs.nixpkgs { inherit system; overlays = attrValues overlays; }
       );
 
       devShells = forAllSystems (system: {
@@ -41,19 +40,16 @@
         radium = mkSystem {
           inherit overlays;
           hostname = "radium";
-          system = "x86_64-linux";
-          users = [ "p0g" ];
+          persistence = true;
         };
       };
 
       homeConfigurations = {
         "p0g@radium" = mkHome {
           inherit overlays;
-          username = "p0g";
-          system = "x86_64-linux";
-          hostname = "radium";
+          desktop = "sway";
+          persistence = true;
 
-          graphical = true;
           colorscheme = "nord";
         };
       };

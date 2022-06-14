@@ -8,15 +8,15 @@
 
 > **Note:** This project is in early-stage and should be used with caution
 
-## Features (or maybe not yet?)
+## Features
 
-* Automate the deployment of my NixOS ecosystem
-* Rassemble my system, app/services and user configuration
-* Encourage modularity and composability to easily spin-up a new device.
+* Mulltiple NixOS system and user configuration in a single Flake.
 
-## Quick start
 
-So far, it doesn't look like there is a quick way to get started with flake.
+## Structure
+
+* 
+
 
 ## TODO
 

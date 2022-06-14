@@ -1,23 +1,25 @@
 { inputs, ... }:
 let
   inherit (builtins) mapAttrs attrValues;
+  inherit (inputs.nixpkgs.lib) nixosSystem mapAttrs' nameValuePair;
 in
 {
   importAttrset = path: mapAttrs (_: import) (import path);
 
   mkSystem =
     { hostname
-    , system
+    , system ? "x86_64-linux"
     , overlays ? { }
-    , users ? [ ]
+    , persistence ? false
     }:
-    inputs.nixpkgs.lib.nixosSystem {
+    nixosSystem {
       inherit system;
       specialArgs = {
-        inherit inputs system hostname;
+        inherit inputs system hostname persistence;
+        homeConfig = inputs.self.outputs.homeConfigurations."p0g@${hostname}".config or { };
       };
       modules = attrValues (import ../modules/nixos) ++ [
-        ../hosts/${hostname}
+        ../nixos/hosts/${hostname}
         {
           networking.hostName = hostname;
 
@@ -25,32 +27,30 @@ in
             overlays = attrValues overlays;
             config.allowUnfree = true;
           };
-
-          nix.registry = inputs.nixpkgs.lib.mapAttrs'
+          nix.registry = mapAttrs'
             (n: v:
-              inputs.nixpkgs.lib.nameValuePair n { flake = v; })
+              nameValuePair n { flake = v; })
             inputs;
         }
-        # System wide config for each user
-      ] ++ inputs.nixpkgs.lib.forEach users
-        (u: ../users/${u}/system);
+      ];
     };
+
   mkHome =
     { username
-    , system
+    , system ? "x86_64-linux"
     , overlays ? { }
-    , hostname
-    , graphical ? false
+    , persistence ? false
+    , desktop ? null
     , colorscheme ? "nord"
     , wallpaper ? null
     }:
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit username system;
       extraSpecialArgs = {
-        inherit system hostname graphical colorscheme wallpaper inputs;
+        inherit system persistence desktop colorscheme wallpaper inputs;
       };
       homeDirectory = "/home/${username}";
-      configuration = ../users/${username}/home;
+      configuration = ../home-manager;
       extraModules = attrValues (import ../modules/home-manager) ++ [
         # Base configuration
         {
