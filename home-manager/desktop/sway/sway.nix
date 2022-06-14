@@ -217,7 +217,4 @@ in {
       exec sway &> /dev/null
     fi
   '';
-
-  home.packages = [ primary-xwayland-pkg ];
-
 }

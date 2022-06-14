@@ -8,7 +8,6 @@
 
       jqless = "jq -C | less -r";
 
-      snrs = "sudo nixos-rebuild switch";
       nd = "nix develop -c $SHELL";
       ns = "nix shell";
       nsn = "nix shell nixpkgs#";

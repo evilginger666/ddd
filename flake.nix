@@ -10,6 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-colors.url = "github:misterio77/nix-colors";
+    impermanence.url = "github:RiscadoA/impermanence";
   };
 
   outputs = inputs:
@@ -46,6 +47,7 @@
 
       homeConfigurations = {
         "p0g@radium" = mkHome {
+          username = "p0g";
           inherit overlays;
           desktop = "sway";
           persistence = true;

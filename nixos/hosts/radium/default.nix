@@ -1,7 +1,6 @@
 { pkgs, inputs, ... }: {
   imports = [
-    inputs.hardware.nixosModules.common-cpu-amd
-    inputs.hardware.nixosModules.common-gpu-amd
+    inputs.hardware.nixosModules.common-cpu-intel
     inputs.hardware.nixosModules.common-pc-ssd
 
     ./hardware-configuration.nix
@@ -20,9 +19,6 @@
     etc."nixos" = {
       target = "nixos";
       source = "/home/p0g/DDD";
-    };
-    variables = {
-      VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
     };
   };
 

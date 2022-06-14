@@ -10,7 +10,7 @@ in
       inputs.impermanence.nixosModules.home-manager.impermanence
     ]
     # Conditional imports, for different features
-    ++ optional (null != desktop) ./desktop/${desktop}
+    ++ optional (null != desktop) ./desktop/${desktop};
 
   # https://github.com/nix-community/home-manager/issues/2942
   nixpkgs.config.allowUnfreePredicate = _: true;
